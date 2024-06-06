@@ -1,0 +1,7 @@
+{
+  "name": "kerzz-demo",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
