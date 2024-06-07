@@ -1,20 +1,65 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+  <ion-toolbar style="background-color: white;">
+    <ion-buttons slot="start">
+      <ion-button>
+        <img src="assets/icon/menu.png">
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button>
+        <img src="assets/icon/shopping.png">
+      </ion-button>
+      <ion-button>
+        <img src="assets/icon/pastOrders.png">
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Ana Sayfa</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-searchbar style="margin-top: 20px; margin-bottom: 20px; background-color: white;" show-clear-button="always" clear-icon="options-outline" placeholder="Mekan ara" (ionInput)="filterRestaurants($event)"></ion-searchbar>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+
+
+  <p class="results-title"><b>Sonuçlar</b></p>
+
+      <ion-card *ngFor="let restaurant of restaurants">
+        <div class="image-container">
+          <ng-container *ngIf="restaurant.images[0]?.base64">
+            <img class="restaurant-image" [src]="restaurant.images[0].base64" />
+            <ion-badge class="rating-badge" color="danger">
+              <img src="assets/icon/star.png" /> {{ restaurant.storeInfo.rate }}
+            </ion-badge>
+          </ng-container>
+        </div>
+        <ion-card-content>
+          <ion-card-title style="font-size: 18px;"><b>{{ restaurant.title }}</b></ion-card-title>
+          <p>{{ restaurant.text }}</p>
+          <div class="info-container">
+            <div class="info-item">
+              <span></span>
+            </div>
+            <div class="info-item">
+              <ion-icon name="basket"></ion-icon>
+              <span>Min. Sipariş Tutarı: ₺{{ restaurant.storeInfo.minOrderPrice }}</span>
+            </div>
+            <div class="info-item">
+              <ion-icon name="location-outline"></ion-icon>
+              <span><b>{{ restaurant.distance }} km yakınında</b></span>
+            </div>
+            <div class="info-item">
+              <span [ngClass]="{'open': restaurant.storeInfo.status === 'open', 'closed': restaurant.storeInfo.status === 'closed'}">
+                {{ restaurant.storeInfo.status === 'open' ? 'İşletme Açık' : 'İşletme Kapalı' }}
+              </span>
+              {{ restaurant.storeInfo.workingHours[0].open }} / {{ restaurant.storeInfo.workingHours[0].close }}
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+      
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
